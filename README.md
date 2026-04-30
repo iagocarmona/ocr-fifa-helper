@@ -1,6 +1,6 @@
 # OCR para Códigos de Figurinhas da Copa
 
-Este projeto fornece tanto um script standalone quanto uma API para reconhecer códigos de figurinhas da Copa do Mundo em imagens usando EasyOCR. Os códigos seguem o formato de três letras maiúsculas seguidas de um número, como "BRA 12" ou "AAA 1".
+Este projeto fornece tanto um script standalone quanto uma API para reconhecer códigos de figurinhas da Copa do Mundo em imagens usando Tesseract OCR. Os códigos seguem o formato de três letras maiúsculas seguidas de um número, como "BRA 12" ou "AAA 1".
 
 ## Instalação
 
@@ -11,7 +11,7 @@ Este projeto fornece tanto um script standalone quanto uma API para reconhecer c
    pip install -r requirements.txt
    ```
 
-   Nota: EasyOCR usa PyTorch; em alguns sistemas, pode ser necessário instalar CUDA para GPU, mas a versão CPU funciona bem.
+   Nota: Tesseract OCR precisa ser instalado no sistema. No Linux: `sudo apt install tesseract-ocr`. No Render, é instalado via build command.
 
 ## Uso como Script Standalone
 
@@ -92,7 +92,7 @@ Para hospedar a API na nuvem usando Render:
 3. **Configure o serviço**:
    - **Name**: Escolha um nome para o serviço (e.g., `ocr-fifa-api`).
    - **Environment**: Selecione `Python`.
-   - **Build Command**: `pip install -r requirements.txt`
+   - **Build Command**: `apt-get update && apt-get install -y tesseract-ocr && pip install -r requirements.txt`
    - **Start Command**: `uvicorn app:app --host 0.0.0.0 --port $PORT`
    - **Plan**: Escolha um plano gratuito ou pago conforme necessário.
 
@@ -113,4 +113,5 @@ Nota: O plano gratuito do Render pode ter limitações de uso; considere um plan
 - Certifique-se de que a imagem esteja clara e o texto legível para melhores resultados.
 - O script/API usa o modelo de idioma inglês, adequado para códigos alfanuméricos.
 - Se nenhum código for encontrado, verifique a qualidade da imagem ou ajuste o padrão regex se necessário.
+
 # ocr-fifa-helper

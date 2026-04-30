@@ -1,22 +1,18 @@
 import re
 import sys
-import easyocr
+import pytesseract
+from PIL import Image
 
 def extract_fifa_codes(image_path):
     """
-    Extrai códigos de figurinhas da Copa do Mundo de uma imagem usando EasyOCR.
+    Extrai códigos de figurinhas da Copa do Mundo de uma imagem usando Tesseract OCR.
     Os códigos seguem o formato: AAA 1, BRA 12, etc.
     """
-    # Inicializar o modelo OCR
-    reader = easyocr.Reader(['en'])
+    # Abrir a imagem
+    image = Image.open(image_path)
     
     # Executar OCR na imagem
-    result = reader.readtext(image_path)
-    
-    # Extrair texto das linhas detectadas
-    text = ''
-    for detection in result:
-        text += detection[1] + ' '  # detection[1] é o texto reconhecido
+    text = pytesseract.image_to_string(image)
     
     # Procurar por padrões de códigos: três letras maiúsculas seguidas de espaço e número
     pattern = r'\b[A-Z]{3} \d+\b'
