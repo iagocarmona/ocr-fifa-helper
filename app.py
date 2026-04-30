@@ -2,8 +2,17 @@ from fastapi import FastAPI, UploadFile, File
 import tempfile
 import os
 from ocr_fifa import extract_fifa_codes
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="OCR FIFA Codes API", description="API para reconhecimento de códigos de figurinhas da Copa via OCR")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # ⚠️ libera tudo (bom pra dev)
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/ocr")
 async def ocr_endpoint(file: UploadFile = File(...)):
