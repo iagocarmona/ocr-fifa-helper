@@ -1,6 +1,6 @@
 # OCR para Códigos de Figurinhas da Copa
 
-Este projeto fornece tanto um script standalone quanto uma API para reconhecer códigos de figurinhas da Copa do Mundo em imagens usando PaddleOCR. Os códigos seguem o formato de três letras maiúsculas seguidas de um número, como "BRA 12" ou "AAA 1".
+Este projeto fornece tanto um script standalone quanto uma API para reconhecer códigos de figurinhas da Copa do Mundo em imagens usando EasyOCR. Os códigos seguem o formato de três letras maiúsculas seguidas de um número, como "BRA 12" ou "AAA 1".
 
 ## Instalação
 
@@ -11,7 +11,7 @@ Este projeto fornece tanto um script standalone quanto uma API para reconhecer c
    pip install -r requirements.txt
    ```
 
-   Nota: PaddleOCR requer PaddlePaddle, que pode precisar de instalação específica dependendo do seu sistema. Consulte a documentação oficial se houver problemas.
+   Nota: EasyOCR usa PyTorch; em alguns sistemas, pode ser necessário instalar CUDA para GPU, mas a versão CPU funciona bem.
 
 ## Uso como Script Standalone
 

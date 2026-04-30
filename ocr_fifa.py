@@ -1,22 +1,22 @@
 import re
 import sys
-from paddleocr import PaddleOCR
+import easyocr
 
 def extract_fifa_codes(image_path):
     """
-    Extrai códigos de figurinhas da Copa do Mundo de uma imagem usando PaddleOCR.
+    Extrai códigos de figurinhas da Copa do Mundo de uma imagem usando EasyOCR.
     Os códigos seguem o formato: AAA 1, BRA 12, etc.
     """
     # Inicializar o modelo OCR
-    ocr = PaddleOCR(use_angle_cls=True, lang='en')
+    reader = easyocr.Reader(['en'])
     
     # Executar OCR na imagem
-    result = ocr.ocr(image_path, cls=True)
+    result = reader.readtext(image_path)
     
     # Extrair texto das linhas detectadas
     text = ''
-    for line in result[0]:  # result[0] contém as linhas
-        text += line[1][0] + ' '  # line[1][0] é o texto reconhecido
+    for detection in result:
+        text += detection[1] + ' '  # detection[1] é o texto reconhecido
     
     # Procurar por padrões de códigos: três letras maiúsculas seguidas de espaço e número
     pattern = r'\b[A-Z]{3} \d+\b'

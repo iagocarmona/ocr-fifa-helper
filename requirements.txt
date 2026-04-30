@@ -1,5 +1,4 @@
-paddlepaddle-cpu==2.6.1
-paddleocr
+easyocr
 fastapi
 uvicorn
 python-multipart
