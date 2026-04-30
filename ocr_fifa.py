@@ -1,39 +1,69 @@
 import re
 import sys
-import pytesseract
-from PIL import Image
+import cv2
+import easyocr
 
-def extract_fifa_codes(image_path):
-    """
-    Extrai códigos de figurinhas da Copa do Mundo de uma imagem usando Tesseract OCR.
-    Os códigos seguem o formato: AAA 1, BRA 12, etc.
-    """
-    # Abrir a imagem
-    image = Image.open(image_path)
+reader = None
+
+def get_reader():
+    global reader
+    if reader is None:
+        reader = easyocr.Reader(['en'], gpu=False)
+    return reader
+
+def preprocess(image_path):
+    img = cv2.imread(image_path)
+    img = cv2.resize(img, None, fx=2, fy=2)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    return gray
+
+
+def extract_fifa_code(image_path):
+    processed = preprocess(image_path)
+    reader = get_reader()
     
-    # Executar OCR na imagem
-    text = pytesseract.image_to_string(image)
-    
-    # Procurar por padrões de códigos: três letras maiúsculas seguidas de espaço e número
-    pattern = r'\b[A-Z]{3} \d+\b'
-    codes = re.findall(pattern, text)
-    
-    return codes
+    results = reader.readtext(processed)
+
+    print("\n🧠 RAW OCR:")
+    for (bbox, text, prob) in results:
+        print(f"{text} ({prob:.2f})")
+
+    best_match = None
+    highest_conf = 0
+
+    for (_, text, prob) in results:
+        cleaned = text.upper().replace(" ", "")
+
+        # correções comuns OCR
+        cleaned = cleaned.replace("I", "1").replace("O", "0")
+
+        match = re.search(r'^([A-Z]{3})(\d{1,2})$', cleaned)
+
+        if match and prob > highest_conf:
+            code = match.group(1)
+            number = int(match.group(2))
+
+            best_match = {
+                "code": code,
+                "number": number,
+                "fullCode": f"{code}{number}",
+                "confidence": float(prob)
+            }
+
+            highest_conf = prob
+
+    return best_match
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Uso: python ocr_fifa.py <caminho_da_imagem>")
-        print("Exemplo: python ocr_fifa.py imagem.jpg")
+        print("Uso: python ocr_fifa.py <imagem>")
         sys.exit(1)
-    
-    image_path = sys.argv[1]
-    try:
-        codes = extract_fifa_codes(image_path)
-        if codes:
-            print("Códigos encontrados:")
-            for code in codes:
-                print(code)
-        else:
-            print("Nenhum código encontrado na imagem.")
-    except Exception as e:
-        print(f"Erro ao processar a imagem: {e}")
+
+    result = extract_fifa_code(sys.argv[1])
+
+    if result:
+        print("\n✅ Resultado:")
+        print(result)
+    else:
+        print("\n❌ Nenhum código encontrado")
