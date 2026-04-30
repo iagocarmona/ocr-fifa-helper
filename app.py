@@ -1,7 +1,7 @@
 from fastapi import FastAPI, UploadFile, File
 import tempfile
 import os
-from ocr_fifa import extract_fifa_codes
+from ocr_fifa import extract_fifa_code
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
@@ -39,12 +39,12 @@ async def ocr_endpoint(file: UploadFile = File(...)):
 
     try:
         print("🔍 Iniciando OCR...")
-        codes = extract_fifa_codes(temp_path)
+        code = extract_fifa_code(temp_path)
 
         print(f"✅ OCR finalizado")
-        print(f"🔢 Códigos encontrados: {codes}")
+        print(f"🔢 Código encontrado: {code}")
 
-        return {"codes": codes}
+        return {"code": code}
 
     except Exception as e:
         print("❌ Erro no OCR:", str(e))
