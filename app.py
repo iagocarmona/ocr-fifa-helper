@@ -51,9 +51,7 @@ async def ocr_endpoint(file: UploadFile = File(...)):
         return {"error": str(e)}
 
     finally:
-        print("🧹 Removendo arquivo temporário")
         os.unlink(temp_path)
-        print("🧹 Arquivo removido")
 
 
 @app.get("/")
